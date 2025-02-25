@@ -10,14 +10,32 @@ html, body {
 }
 
 #unity-container {
-    width: 960px;
-    height: 606px;
+    position: relative; /* Places it over other elements */
+    width: 80vw;
+    height: auto;
+    max-width: 960px;
+    min-width: 960px;
+    aspect-ratio: 960/604;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #unity-frame {
     width: 100%;
     height: 100%;
     border: none;
+}
+
+#overlay-image {
+    position: absolute;
+    top: 72%;
+    left: 50%;
+    width: 1130px; /* Increase this if needed */
+    height: auto; /* Maintain aspect ratio */
+    transform: translate(-50%, -50%); /* Center it */
+    z-index: 10;
+    pointer-events: none;
 }
 
 /* Style for the background div */
@@ -31,13 +49,21 @@ html, body {
     z-index: -1; /* Keeps it behind all content */
 }
 
-#overlay-image {
-    position: absolute; /* Places it over other elements */
-    top: 50%; /* Adjust the position */
-    left: 50%;
-    transform: translate(-50%, -50%); /* Centers it */
-    width: 1120px; /* Adjust based on your preference */
-    height: 1040px;
-    z-index: 10; /* Ensures it's on top */
-    pointer-events: none; /* Allows clicking through to Unity */
+/* Mobile Breakpoint - Show Warning Instead */
+#warning-message {
+    display: none;
+    color: white;
+    font-size: 24px;
+    text-align: center;
+}
+
+/* If screen width is below 960px, hide the game and show warning */
+@media (max-width: 960px) {
+    #content-container {
+        display: none;
+    }
+    
+    #warning-message {
+        display: block;
+    }
 }
