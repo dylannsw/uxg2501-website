@@ -1,32 +1,36 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let fakeComment = document.getElementById("fake-comment");
+document.addEventListener("DOMContentLoaded", function () {
+    let backgroundDiv = document.getElementById("background-wallpaper");
 
-    // Function to extract hex code from fake comment
-    function getFakeHexCode() {
-        let commentText = fakeComment.innerHTML;
-        let match = commentText.match(/#[0-9A-Fa-f]{6}/);
-        return match ? match[0] : null;
+    function getBackgroundColor() {
+        return window.getComputedStyle(backgroundDiv).backgroundColor;
     }
 
-    let previousColor = getFakeHexCode();
+    let previousColor = getBackgroundColor();
 
-    // Function to send background color to Unity
     function notifyUnity(newColor) {
-        console.log("Background color changed to:", newColor);
-        let unityFrame = document.getElementById("unity-frame").contentWindow;
-        if (unityFrame) {
-            unityFrame.postMessage({ type: "colorChange", value: newColor }, "*");
+        console.log("[BROWSER] Background color changed to:", newColor);
+        
+        // Send message to Unity if it exists
+        if (typeof unityInstance !== "undefined") {
+            unityInstance.SendMessage("WebGLInteraction", "OnBackgroundColorChanged", newColor);
         }
     }
 
-    // MutationObserver to detect changes in the fake comment
+    // MutationObserver to detect background color changes
     const observer = new MutationObserver(() => {
-        let newColor = getFakeHexCode();
-        if (newColor && newColor !== previousColor) {
+        let newColor = getBackgroundColor();
+        if (newColor !== previousColor) {
             previousColor = newColor;
             notifyUnity(newColor);
         }
     });
 
-    observer.observe(fakeComment, { characterData: true, childList: true, subtree: true });
+    observer.observe(backgroundDiv, { attributes: true, subtree: true });
 });
+
+// Ensure the function is properly registered in the browser
+window.SendToBrowser = function (message) {
+    console.log("[UNITY LOG RECEIVED]: " + message);
+};
+
+

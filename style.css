@@ -1,21 +1,43 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #1e1e1e;
-    color: white;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-}
-
-/* Unity Game Container */
-#unity-container {
+html, body {
     width: 100vw;
     height: 100vh;
-    margin: 20px auto;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    background-color: #1e1e1e; /* Optional background color */
+}
+
+#unity-container {
+    width: 960px;
+    height: 606px;
 }
 
 #unity-frame {
     width: 100%;
     height: 100%;
-    border: 2px solid white;
+    border: none;
+}
+
+/* Style for the background div */
+#background-wallpaper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #dc1c1c; /* Default color */
+    z-index: -1; /* Keeps it behind all content */
+}
+
+#overlay-image {
+    position: absolute; /* Places it over other elements */
+    top: 50%; /* Adjust the position */
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centers it */
+    width: 1120px; /* Adjust based on your preference */
+    height: 1040px;
+    z-index: 10; /* Ensures it's on top */
+    pointer-events: none; /* Allows clicking through to Unity */
 }
