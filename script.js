@@ -1,7 +1,28 @@
 console.log("✅ script.js has been loaded successfully!");
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("✅ DOM fully loaded. Background observer script running...");
+    console.log("✅ DOM fully loaded. Starting background observer...");
+
+    const iframe = document.getElementById("unity-frame");
+
+    if (!iframe) {
+        console.error("❌ Unity iframe not found!");
+        return;
+    }
+
+    function notifyUnity() {
+        console.log("📤 Sending message to Unity: HideRecycleBin");
+
+        // Ensure Unity instance is referenced correctly
+        if (typeof SendMessage === "function") {
+            SendMessage("WebGLInteraction", "OnMessageReceived", "HideRecycleBin");
+            console.log("✅ Successfully sent message to Unity!");
+        } else {
+            console.warn("⚠️ Unity WebGL SendMessage function not found.");
+        }
+    }
+
+    console.log("✅ Background observer script running...");
 
     const targetNode = document.getElementById("background-wallpaper");
 
@@ -12,32 +33,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log("✅ Target Node found successfully!");
 
-    function notifyUnity() {
-        console.log("📤 Sending message to Unity: HideRecycleBin"); // Debug log
-        const iframe = document.getElementById("unity-frame");
-        if (iframe && iframe.contentWindow) {
-            iframe.contentWindow.postMessage("HideRecycleBin", "*"); 
-        } else {
-            console.warn("⚠️ Unity WebGL frame not found.");
-        }
-    }
-
     let lastColor = window.getComputedStyle(targetNode).backgroundColor;
-    let colorChangeTimeout;
 
-    // Function to detect key press (Enter)
-    function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            let newColor = window.getComputedStyle(targetNode).backgroundColor;
-
-            if (newColor !== lastColor) {
-                console.log(`🎨 Background color changed! New color: ${newColor}`);
-                lastColor = newColor;
-                notifyUnity();
-            }
+    setInterval(() => {
+        let newColor = window.getComputedStyle(targetNode).backgroundColor;
+        if (newColor !== lastColor) {
+            console.log(`🎨 Background color changed! New color: ${newColor}`);
+            lastColor = newColor;
+            notifyUnity();
         }
-    }
-
-    // Attach keypress listener to the entire document
-    document.addEventListener("keydown", handleKeyPress);
+    }, 500); // Checks every 500ms
 });
