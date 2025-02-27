@@ -23,21 +23,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let lastColor = window.getComputedStyle(targetNode).backgroundColor;
-    let colorChangeCooldown = false; // Cooldown flag to prevent spam
+    let colorChangeTimeout;
 
-    setInterval(() => {
-        let newColor = window.getComputedStyle(targetNode).backgroundColor;
+    // Function to detect key press (Enter)
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            let newColor = window.getComputedStyle(targetNode).backgroundColor;
 
-        if (newColor !== lastColor && !colorChangeCooldown) {
-            colorChangeCooldown = true; // Activate cooldown
-            console.log(`🎨 Background color changed! New color: ${newColor}`);
-            lastColor = newColor;
-            notifyUnity();
-
-            // Reset cooldown after 1 second to prevent spam
-            setTimeout(() => {
-                colorChangeCooldown = false;
-            }, 1000);
+            if (newColor !== lastColor) {
+                console.log(`🎨 Background color changed! New color: ${newColor}`);
+                lastColor = newColor;
+                notifyUnity();
+            }
         }
-    }, 500); // Check every 500ms
+    }
+
+    // Attach keypress listener to the entire document
+    document.addEventListener("keydown", handleKeyPress);
 });
