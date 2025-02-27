@@ -1,36 +1,27 @@
 document.addEventListener("DOMContentLoaded", function () {
-    let backgroundDiv = document.getElementById("background-wallpaper");
+    const targetNode = document.getElementById("background-wallpaper");
 
-    function getBackgroundColor() {
-        return window.getComputedStyle(backgroundDiv).backgroundColor;
+    if (!targetNode) {
+        console.error("Target element not found!");
+        return;
     }
 
-    let previousColor = getBackgroundColor();
-
-    function notifyUnity(newColor) {
-        console.log("[BROWSER] Background color changed to:", newColor);
-        
-        // Send message to Unity if it exists
-        if (typeof unityInstance !== "undefined") {
-            unityInstance.SendMessage("WebGLInteraction", "OnBackgroundColorChanged", newColor);
+    function notifyUnity() {
+        const iframe = document.getElementById("unity-frame");
+        if (iframe && iframe.contentWindow) {
+            iframe.contentWindow.postMessage("HideRecycleBin", "*"); // Send message to Unity WebGL
+        } else {
+            console.warn("Unity WebGL frame not found.");
         }
     }
 
-    // MutationObserver to detect background color changes
-    const observer = new MutationObserver(() => {
-        let newColor = getBackgroundColor();
-        if (newColor !== previousColor) {
-            previousColor = newColor;
-            notifyUnity(newColor);
+    const observer = new MutationObserver((mutationsList) => {
+        for (let mutation of mutationsList) {
+            if (mutation.type === "attributes" && mutation.attributeName === "style") {
+                notifyUnity(); // Notify Unity when background color changes
+            }
         }
     });
 
-    observer.observe(backgroundDiv, { attributes: true, subtree: true });
+    observer.observe(targetNode, { attributes: true, attributeFilter: ["style"] });
 });
-
-// Ensure the function is properly registered in the browser
-window.SendToBrowser = function (message) {
-    console.log("[UNITY LOG RECEIVED]: " + message);
-};
-
-
