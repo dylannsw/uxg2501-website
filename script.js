@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Ensure Unity instance is referenced correctly
         if (typeof SendMessage === "function") {
-            SendMessage("WebGLInteraction", "OnMessageReceived", "HideRecycleBin");
+            SendMessage("WebGLInteraction", "ReceiveMessage", "HideRecycleBin");
             console.log("✅ Successfully sent message to Unity!");
         } else {
             console.warn("⚠️ Unity WebGL SendMessage function not found.");

@@ -20,8 +20,8 @@ html, body {
 }
 
 #unity-frame {
-    position: relative;
-    top: -80px;
+    position: absolute;
+    top: 62px;
     width: 570px;
     height: auto;
     aspect-ratio: 960/604;
@@ -30,10 +30,10 @@ html, body {
 
 #overlay-image {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0;
+    width: 670px;
+    height: auto;
+    aspect-ratio: 1122/1074;
     object-fit: contain; /* Prevents distortion */
     z-index: 10; /* Ensures it's on top */
     pointer-events: none; /* Allows interaction with Unity */
